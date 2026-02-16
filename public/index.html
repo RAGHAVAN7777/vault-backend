@@ -9,129 +9,232 @@
 </head>
 
 <body>
-    <div class="vault-container">
-        <div class="monolith-card">
-            <div class="header">
-                <h1>Vault</h1>
-                <div class="status-line">// ACCESS_REQUIRED</div>
-            </div>
+    <div class="main-wrapper">
+        <div class="vault-container">
+            <div class="monolith-card">
+                <div class="header">
+                    <h1>Vault</h1>
+                    <div class="status-line">// ACCESS_REQUIRED</div>
+                </div>
 
-            <!-- Screen 1: Login -->
-            <div id="screen-login" class="step active">
-                <div class="input-block">
-                    <label>OPERATOR_ID</label>
-                    <input type="text" id="login-userid" placeholder="YOURUSERID">
+                <!-- Screen 1: Login -->
+                <div id="screen-login" class="step active">
+                    <div class="input-block">
+                        <label>OPERATOR_ID</label>
+                        <input type="text" id="login-userid" placeholder="YOURUSERID">
+                    </div>
+                    <div class="input-block">
+                        <label>SEC_KEY.MPIN</label>
+                        <input type="password" id="login-mpin" maxlength="6" placeholder="••••••">
+                    </div>
+                    <button id="btn-login">INITIATE_UNLOCK</button>
+                    <div class="nav-links">
+                        UNREGISTERED? <span id="go-to-signup">CREATE_ENTITY</span><br>
+                        LOST_ACCESS? <span id="go-to-recovery">RECOVER_AUTH</span>
+                    </div>
                 </div>
-                <div class="input-block">
-                    <label>SEC_KEY.MPIN</label>
-                    <input type="password" id="login-mpin" maxlength="6" placeholder="••••••">
+
+                <!-- Screen 2: Signup Step 1 - Role & Email -->
+                <div id="screen-signup-1" class="step">
+                    <label>LEVEL_CLEARANCE</label>
+                    <div class="role-selector">
+                        <div class="role-opt selected" data-role="normal">L1: NORMAL</div>
+                        <div class="role-opt" data-role="power">L2: POWER</div>
+                        <div class="role-opt" data-role="admin">L3: ADMIN</div>
+                    </div>
+                    <div class="input-block">
+                        <label>VERIFICATION_EMAIL</label>
+                        <input type="email" id="signup-email" placeholder="OPERATOR@GMAIL.COM">
+                    </div>
+                    <button id="btn-send-otp">REQUEST_VERIFICATION</button>
+                    <div class="nav-links">
+                        REGISTERED? <span class="go-to-login">BACK_TO_LOGIN</span>
+                    </div>
                 </div>
-                <button id="btn-login">INITIATE_UNLOCK</button>
-                <div class="nav-links">
-                    UNREGISTERED? <span id="go-to-signup">CREATE_ENTITY</span><br>
-                    LOST_ACCESS? <span id="go-to-recovery">RECOVER_AUTH</span>
+
+                <!-- Screen 3: OTP Verification -->
+                <div id="screen-otp" class="step">
+                    <div class="input-block">
+                        <label>TEMPORARY_TOKEN (6-DIGIT)</label>
+                        <input type="text" id="otp-code" maxlength="6" placeholder="000000" style="text-align: center;">
+                    </div>
+                    <button id="btn-verify-otp">VALIDATE_AUTH</button>
+                    <div class="nav-links">
+                        NO_TOKEN? <span id="resend-otp">RE_TRANSMIT</span>
+                    </div>
+                </div>
+
+                <!-- Screen 3.5: Master OTP Verification (Admin Only) -->
+                <div id="screen-master-otp" class="step">
+                    <div class="status-line" style="color: var(--error); margin-bottom: 10px;">//
+                        MASTER_AUTHORIZATION_REQUIRED</div>
+                    <div class="input-block">
+                        <label>MASTER_TOKEN (GMAIL_RESTRICTED)</label>
+                        <input type="text" id="master-otp-code" maxlength="6" placeholder="000000"
+                            style="text-align: center;">
+                    </div>
+                    <button id="btn-verify-master-otp">AUTHORIZE_ADMIN_LEVEL</button>
+                    <div class="nav-links">
+                        WAITING_FOR_MASTER_GMAIL_SIGNAL...
+                    </div>
+                </div>
+
+                <!-- Screen 4: Set Credentials -->
+                <div id="screen-credentials" class="step">
+                    <div class="input-block">
+                        <label>PERMANENT_OPERATOR_ID</label>
+                        <input type="text" id="signup-userid" placeholder="CHOOSE_ID">
+                    </div>
+                    <div class="input-block">
+                        <label>SET_SEC_KEY (6-DIGIT)</label>
+                        <input type="password" id="signup-mpin" maxlength="6" placeholder="••••••">
+                    </div>
+                    <button id="btn-register">FINALIZE_ENTITY</button>
+                </div>
+
+                <!-- Screen 6: Recovery Request -->
+                <div id="screen-recover-1" class="step">
+                    <div class="input-block">
+                        <label>OPERATOR_ID_TO_RESTORE</label>
+                        <input type="text" id="recover-userid" placeholder="ID_REF">
+                    </div>
+                    <div class="input-block">
+                        <label>LINKED_EMAIL</label>
+                        <input type="email" id="recover-email" placeholder="EMAIL_REF">
+                    </div>
+                    <button id="btn-recover-send-otp">INITIATE_RECOVERY</button>
+                    <div class="nav-links">
+                        ABORT_RECOVERY? <span class="go-to-login">BACK_TO_LOGIN</span>
+                    </div>
+                </div>
+
+                <!-- Screen 7: Recovery Reset -->
+                <div id="screen-recover-2" class="step">
+                    <div class="input-block">
+                        <label>RECOVERY_TOKEN</label>
+                        <input type="text" id="recover-otp" maxlength="6" placeholder="000000"
+                            style="text-align: center;">
+                    </div>
+                    <div class="input-block">
+                        <label>NEW_SEC_KEY</label>
+                        <input type="password" id="recover-new-mpin" maxlength="6" placeholder="••••••">
+                    </div>
+                    <button id="btn-recover-reset">OVERWRITE_AUTH</button>
+                </div>
+
+                <!-- Screen 5: Dashboard -->
+                <div id="screen-dashboard" class="step">
+                    <div class="unlock-icon">🔓</div>
+                    <p id="dashboard-welcome"
+                        style="text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; margin-bottom: 20px;">
+                        SYSTEM_UNLOCKED</p>
+                    <button class="go-to-login"
+                        style="background: transparent; border: 1px solid var(--border); color: var(--text-dim);">TERMINATE_SESSION</button>
+                </div>
+
+                <div id="error-display"></div>
+                <div class="loader-bar" id="monolith-loader"></div>
+            </div>
+        </div>
+
+        <!-- 3D Cinematic Segment -->
+        <!-- 3D Cinematic Segment -->
+        <div class="cube-stage">
+            <div class="cube">
+                <!-- TOP SLICE (Y-Axis Rotatable) -->
+                <div class="slice slice-top">
+                    <div class="face side-front">
+                        <div class="facet f1"></div>
+                        <div class="facet f2"></div>
+                        <div class="facet f3"></div>
+                    </div>
+                    <div class="face side-back">
+                        <div class="facet f1"></div>
+                        <div class="facet f2"></div>
+                        <div class="facet f3"></div>
+                    </div>
+                    <div class="face side-right">
+                        <div class="facet f1"></div>
+                        <div class="facet f2"></div>
+                        <div class="facet f3"></div>
+                    </div>
+                    <div class="face side-left">
+                        <div class="facet f1"></div>
+                        <div class="facet f2"></div>
+                        <div class="facet f3"></div>
+                    </div>
+                    <div class="face side-top">
+                        <div class="facet f1"></div>
+                        <div class="facet f2"></div>
+                        <div class="facet f3"></div>
+                        <div class="facet f4"></div>
+                        <div class="facet f5"></div>
+                        <div class="facet f6"></div>
+                        <div class="facet f7"></div>
+                        <div class="facet f8"></div>
+                        <div class="facet f9"></div>
+                    </div>
+                </div>
+
+                <!-- MIDDLE SLICE -->
+                <div class="slice slice-middle">
+                    <div class="face side-front">
+                        <div class="facet f4"></div>
+                        <div class="facet f5"></div>
+                        <div class="facet f6"></div>
+                    </div>
+                    <div class="face side-back">
+                        <div class="facet f4"></div>
+                        <div class="facet f5"></div>
+                        <div class="facet f6"></div>
+                    </div>
+                    <div class="face side-right">
+                        <div class="facet f4"></div>
+                        <div class="facet f5"></div>
+                        <div class="facet f6"></div>
+                    </div>
+                    <div class="face side-left">
+                        <div class="facet f4"></div>
+                        <div class="facet f5"></div>
+                        <div class="facet f6"></div>
+                    </div>
+                </div>
+
+                <!-- BOTTOM SLICE -->
+                <div class="slice slice-bottom">
+                    <div class="face side-front">
+                        <div class="facet f7"></div>
+                        <div class="facet f8"></div>
+                        <div class="facet f9"></div>
+                    </div>
+                    <div class="face side-back">
+                        <div class="facet f7"></div>
+                        <div class="facet f8"></div>
+                        <div class="facet f9"></div>
+                    </div>
+                    <div class="face side-right">
+                        <div class="facet f7"></div>
+                        <div class="facet f8"></div>
+                        <div class="facet f9"></div>
+                    </div>
+                    <div class="face side-left">
+                        <div class="facet f7"></div>
+                        <div class="facet f8"></div>
+                        <div class="facet f9"></div>
+                    </div>
+                    <div class="face side-bottom">
+                        <div class="facet f1"></div>
+                        <div class="facet f2"></div>
+                        <div class="facet f3"></div>
+                        <div class="facet f4"></div>
+                        <div class="facet f5"></div>
+                        <div class="facet f6"></div>
+                        <div class="facet f7"></div>
+                        <div class="facet f8"></div>
+                        <div class="facet f9"></div>
+                    </div>
                 </div>
             </div>
-
-            <!-- Screen 2: Signup Step 1 - Role & Email -->
-            <div id="screen-signup-1" class="step">
-                <label>LEVEL_CLEARANCE</label>
-                <div class="role-selector">
-                    <div class="role-opt selected" data-role="normal">L1: NORMAL</div>
-                    <div class="role-opt" data-role="power">L2: POWER</div>
-                    <div class="role-opt" data-role="admin">L3: ADMIN</div>
-                </div>
-                <div class="input-block">
-                    <label>VERIFICATION_EMAIL</label>
-                    <input type="email" id="signup-email" placeholder="OPERATOR@GMAIL.COM">
-                </div>
-                <button id="btn-send-otp">REQUEST_VERIFICATION</button>
-                <div class="nav-links">
-                    REGISTERED? <span class="go-to-login">BACK_TO_LOGIN</span>
-                </div>
-            </div>
-
-            <!-- Screen 3: OTP Verification -->
-            <div id="screen-otp" class="step">
-                <div class="input-block">
-                    <label>TEMPORARY_TOKEN (6-DIGIT)</label>
-                    <input type="text" id="otp-code" maxlength="6" placeholder="000000" style="text-align: center;">
-                </div>
-                <button id="btn-verify-otp">VALIDATE_AUTH</button>
-                <div class="nav-links">
-                    NO_TOKEN? <span id="resend-otp">RE_TRANSMIT</span>
-                </div>
-            </div>
-
-            <!-- Screen 3.5: Master OTP Verification (Admin Only) -->
-            <div id="screen-master-otp" class="step">
-                <div class="status-line" style="color: var(--error); margin-bottom: 10px;">//
-                    MASTER_AUTHORIZATION_REQUIRED</div>
-                <div class="input-block">
-                    <label>MASTER_TOKEN (GMAIL_RESTRICTED)</label>
-                    <input type="text" id="master-otp-code" maxlength="6" placeholder="000000"
-                        style="text-align: center;">
-                </div>
-                <button id="btn-verify-master-otp">AUTHORIZE_ADMIN_LEVEL</button>
-                <div class="nav-links">
-                    WAITING_FOR_MASTER_GMAIL_SIGNAL...
-                </div>
-            </div>
-
-            <!-- Screen 4: Set Credentials -->
-            <div id="screen-credentials" class="step">
-                <div class="input-block">
-                    <label>PERMANENT_OPERATOR_ID</label>
-                    <input type="text" id="signup-userid" placeholder="CHOOSE_ID">
-                </div>
-                <div class="input-block">
-                    <label>SET_SEC_KEY (6-DIGIT)</label>
-                    <input type="password" id="signup-mpin" maxlength="6" placeholder="••••••">
-                </div>
-                <button id="btn-register">FINALIZE_ENTITY</button>
-            </div>
-
-            <!-- Screen 6: Recovery Request -->
-            <div id="screen-recover-1" class="step">
-                <div class="input-block">
-                    <label>OPERATOR_ID_TO_RESTORE</label>
-                    <input type="text" id="recover-userid" placeholder="ID_REF">
-                </div>
-                <div class="input-block">
-                    <label>LINKED_EMAIL</label>
-                    <input type="email" id="recover-email" placeholder="EMAIL_REF">
-                </div>
-                <button id="btn-recover-send-otp">INITIATE_RECOVERY</button>
-                <div class="nav-links">
-                    ABORT_RECOVERY? <span class="go-to-login">BACK_TO_LOGIN</span>
-                </div>
-            </div>
-
-            <!-- Screen 7: Recovery Reset -->
-            <div id="screen-recover-2" class="step">
-                <div class="input-block">
-                    <label>RECOVERY_TOKEN</label>
-                    <input type="text" id="recover-otp" maxlength="6" placeholder="000000" style="text-align: center;">
-                </div>
-                <div class="input-block">
-                    <label>NEW_SEC_KEY</label>
-                    <input type="password" id="recover-new-mpin" maxlength="6" placeholder="••••••">
-                </div>
-                <button id="btn-recover-reset">OVERWRITE_AUTH</button>
-            </div>
-
-            <!-- Screen 5: Dashboard -->
-            <div id="screen-dashboard" class="step">
-                <div class="unlock-icon">🔓</div>
-                <p id="dashboard-welcome"
-                    style="text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; margin-bottom: 20px;">
-                    SYSTEM_UNLOCKED</p>
-                <button class="go-to-login"
-                    style="background: transparent; border: 1px solid var(--border); color: var(--text-dim);">TERMINATE_SESSION</button>
-            </div>
-
-            <div id="error-display"></div>
-            <div class="loader-bar" id="monolith-loader"></div>
         </div>
     </div>
     <script src="app.js"></script>
