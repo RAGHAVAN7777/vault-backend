@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAULT — OPERATOR_DASHBOARD</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .monolith-card.db-card {
+            max-width: none;
+            padding: 40px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            resize: none;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .file-list {
+            margin-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+
+        .file-info {
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .file-info:hover {
+            color: var(--accent);
+        }
+
+        .delete-btn {
+            color: var(--error);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .logout-bar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            cursor: pointer;
+        }
+
+        .logout-bar:hover {
+            color: var(--text-main);
+        }
+
+        /* Custom Cinematic Modals */
+        #custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-monolith {
+            max-width: 450px;
+            width: 90%;
+            padding: 40px;
+            border: 1px solid var(--border);
+            text-align: center;
+            background: #050505;
+            position: relative;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            overflow: hidden;
+        }
+
+        .modal-monolith::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 20px;
+            height: 20px;
+            border-top: 2px solid var(--accent);
+            border-left: 2px solid var(--accent);
+        }
+
+        .modal-monolith::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 20px;
+            height: 20px;
+            border-bottom: 2px solid var(--accent);
+            border-right: 2px solid var(--accent);
+        }
+
+        .modal-input {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 15px;
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            margin: 20px 0;
+            outline: none;
+            text-align: center;
+        }
+
+        .modal-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border: none;
+            text-transform: uppercase;
+        }
+
+        .modal-btn.primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .modal-btn.secondary {
+            background: transparent;
+            border: 1px solid #333;
+            color: var(--text-dim);
+        }
+
+        .modal-btn:hover {
+            filter: brightness(0.8);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Custom Modal System -->
+    <div id="custom-modal-overlay">
+        <div class="modal-monolith">
+            <div id="modal-title" class="status-line" style="margin-bottom: 15px; color: var(--accent);">//
+                SYSTEM_PROMPT</div>
+            <div id="modal-message"
+                style="font-size: 0.8rem; color: var(--text-main); line-height: 1.6; margin-bottom: 10px;">
+                ENTER_PARAMETERS...</div>
+            <input type="text" id="modal-prompt-input" class="modal-input" style="display: none;">
+            <div class="modal-actions">
+                <button id="modal-cancel-btn" class="modal-btn secondary">CANCEL</button>
+                <button id="modal-confirm-btn" class="modal-btn primary">CONFIRM</button>
+            </div>
+        </div>
+    </div>
+    <!-- Top Identity & Status Bar -->
+    <div id="top-status-bar"
+        style="max-width: 900px; margin: 40px auto 10px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px;">
+        <div id="user-identity">
+            <div class="status-line"
+                style="font-size: 0.6rem; color: var(--accent); opacity: 0.9; letter-spacing: 2px;">//
+                SYSTEM_OPERATOR_ONLINE</div>
+            <div id="display-userid"
+                style="font-size: 1.4rem; color: var(--text-main); font-weight: 800; text-transform: uppercase; letter-spacing: -0.5px; line-height: 1;">
+                ACCESSING...</div>
+            <div id="display-role"
+                style="font-size: 0.6rem; color: var(--text-dim); margin-top: 8px; letter-spacing: 1px;">
+                [SEARCHING_ACCESS_TIER...]</div>
+        </div>
+        <div class="logout-bar" onclick="logout()"
+            style="position: static; padding: 10px 15px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); font-size: 0.6rem; letter-spacing: 1px;">
+            // TERMINATE_SESSION</div>
+    </div>
+
+    <!-- Universal Storage Quota -->
+    <div id="storage-container"
+        style="max-width: 600px; margin: 0 auto 50px auto; padding: 0 20px; text-align: center; opacity: 1; transition: all 0.5s ease;">
+        <div class="status-line" id="storage-text"
+            style="font-size: 0.6rem; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; color: var(--text-dim); letter-spacing: 1px;">
+            // INITIALIZING_STORAGE_LINK...</div>
+        <div
+            style="width: 100%; height: 4px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; border-radius: 2px;">
+            <div id="storage-fill"
+                style="width: 0%; height: 100%; background: #fff; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 15px rgba(255,255,255,0.5);">
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Notebook Section (Operator Workspace) -->
+        <div class="monolith-card db-card" id="notebook-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div class="status-line">// OPERATOR_NOTEBOOKS.DB</div>
+                <button id="btn-add-note" onclick="triggerNoteCreation()"
+                    style="width: auto; padding: 5px 15px; background: transparent; color: var(--accent); border: 1px solid var(--accent); font-size: 0.7rem;">+
+                    CREATE_NEW</button>
+            </div>
+
+            <!-- Safe Holding Area for Editor (Prevents destruction during re-renders) -->
+            <div id="editor-reservoir" style="display: none;">
+                <div id="note-editor-view"
+                    style="margin: 20px 0; border-top: 1px dashed var(--border); border-bottom: 1px dashed var(--border); padding: 20px 0;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <input type="hidden" id="active-note-id">
+                        <div id="active-note-title" class="status-line"
+                            style="color: var(--accent); font-size: 0.7rem;">// LOG_EDITOR</div>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="saveActiveNote()"
+                                style="width: auto; padding: 5px 10px; background: var(--accent); color: #000; font-size: 0.6rem;">SAVE</button>
+                            <button onclick="downloadNote()"
+                                style="width: auto; padding: 5px 10px; border: 1px solid var(--success); color: var(--success); background: transparent; font-size: 0.6rem;">DOWNLOAD</button>
+                            <button onclick="closeNoteEditor()"
+                                style="width: auto; padding: 5px 10px; border: 1px solid var(--text-dim); color: var(--text-dim); background: transparent; font-size: 0.6rem;">EXIT</button>
+                        </div>
+                    </div>
+                    <textarea id="notesBox" placeholder="// START_INPUT_SEQUENCE..."
+                        style="height: 300px; background: #080808;"></textarea>
+                    <div id="note-status" class="status-line"
+                        style="margin-top: 10px; font-size: 0.5rem; opacity: 0.7;">// STANDBY</div>
+                </div>
+            </div>
+
+            <!-- Notebook List View -->
+            <div id="note-list-view" style="display: block;">
+                <div id="notebook-entries" style="display: grid; gap: 10px;">
+                    <!-- Notebook items will load here -->
+                    <div class="status-line">// INITIALIZING_LOGS...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Section -->
+        <div class="monolith-card db-card">
+            <div class="status-line" style="margin-bottom: 20px;">// DATA_VAULT.FS</div>
+
+            <input type="file" id="fileInput" style="display: none;">
+            <button onclick="document.getElementById('fileInput').click()">SELECT_FILE_FOR_INGESTION</button>
+            <button id="btn-upload"
+                style="margin-top: 10px; background: transparent; color: var(--accent); border: 1px solid var(--accent);">INITIATE_UPLOAD</button>
+            <div id="upload-status" class="status-line" style="margin-top: 10px; height: 1rem;"></div>
+
+            <div class="file-list" id="fileList">
+                <!-- Files will load here -->
+                <div class="status-line">// NO_FILES_IN_STAGING</div>
+            </div>
+
+            <div class="loader-bar" id="db-loader"></div>
+        </div>
+    </div>
+
+    <!-- Destruction Zone -->
+    <div
+        style="margin-top: 80px; border-top: 1px solid rgba(255,51,51,0.2); padding-top: 40px; text-align: center; margin-bottom: 50px;">
+        <div class="status-line" style="color: var(--error); margin-bottom: 20px;">// CRITICAL_DESTRUCTION_ZONE</div>
+        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+            <button onclick="purgeAllContent()"
+                style="width: auto; padding: 10px 20px; border: 1px solid var(--error); color: var(--error); background: transparent; font-size: 0.7rem;">PURGE_ALL_CONTENT</button>
+            <button onclick="requestAccountPurge()"
+                style="width: auto; padding: 10px 20px; background: var(--error); color: #fff; font-size: 0.7rem; font-weight: bold;">PURGE_ACCOUNT_ENTITY</button>
+        </div>
+        <div
+            style="font-size: 0.55rem; color: var(--text-dim); margin-top: 15px; opacity: 0.8; font-family: 'JetBrains Mono', monospace;">
+            WARNING: DESTRUCTION_IS_PERMANENT. DATA_RECOVERY_IS_IMPOSSIBLE.
+        </div>
+    </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

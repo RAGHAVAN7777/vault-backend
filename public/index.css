@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+    --bg: #000000;
+    --surface: #0a0a0a;
+    --border: #222222;
+    --text-main: #ffffff;
+    --text-dim: #b0b0b0;
+    --accent: #ffffff;
+    --accent-dim: #cccccc;
+    --error: #ff3333;
+    --success: #33ff33;
+    --grid-color: rgba(255, 255, 255, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    cursor: crosshair;
+}
+
+body {
+    background-color: var(--bg);
+    background-image:
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 60px 60px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: var(--text-main);
+    overflow-y: auto;
+    padding: 80px 0;
+}
+
+.vault-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+}
+
+.monolith-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    padding: 60px 40px;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 1);
+}
+
+/* Industrial Corner Brackets */
+.monolith-card::before,
+.monolith-card::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--accent);
+}
+
+.monolith-card::before {
+    top: -2px;
+    left: -2px;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.monolith-card::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: 0;
+    border-top: 0;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: -2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.status-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+}
+
+.step {
+    display: none;
+    opacity: 0;
+}
+
+.step.active {
+    display: block;
+    animation: flicker 0.3s ease-in forwards;
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.input-block {
+    margin-bottom: 30px;
+}
+
+label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+input,
+select {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 18px;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+input::placeholder {
+    color: #666;
+}
+
+input:focus {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Custom MPIN Input Style */
+input[type="password"] {
+    letter-spacing: 8px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+button {
+    width: 100%;
+    padding: 20px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background: #ccc;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    background: var(--text-dim);
+    cursor: wait;
+}
+
+.role-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+}
+
+.role-opt {
+    padding: 15px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+
+.role-opt:last-child {
+    border-right: 0;
+}
+
+.role-opt.selected {
+    background: var(--accent);
+    color: #000;
+}
+
+.nav-links {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nav-links span {
+    color: var(--text-main);
+    text-decoration: underline;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.nav-links span:hover {
+    color: var(--accent);
+}
+
+#error-display {
+    margin-top: 20px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    min-height: 1rem;
+}
+
+/* Loading Spinner Replacement: Brutalist progress bar */
+.loader-bar {
+    width: 100%;
+    height: 2px;
+    background: #111;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    display: none;
+}
+
+.loader-bar::after {
+    content: '';
+    position: absolute;
+    width: 30%;
+    height: 100%;
+    background: var(--accent);
+    animation: slide-load 1.5s infinite linear;
+}
+
+@keyframes slide-load {
+    0% {
+        left: -30%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+/* Dashboard Specific */
+#screen-dashboard .unlock-icon {
+    font-size: 4rem;
+    margin: 40px 0;
+    text-align: center;
+    filter: grayscale(1);
+}
