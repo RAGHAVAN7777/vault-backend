@@ -85,7 +85,7 @@ document.getElementById('btn-login').onclick = async () => {
         sessionStorage.setItem("userRole", res.user.role);
         sessionStorage.setItem("userId", res.user.userId);
         setError('ACCESS_GRANTED. INITIALIZING_DASHBOARD...', true);
-        setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
+        setTimeout(() => { window.location.replace("dashboard.html"); }, 800);
     } catch (e) { }
     setBtnLoading('btn-login', false);
 };

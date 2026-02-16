@@ -2,7 +2,7 @@ const API_BASE = "/api";
 const userId = sessionStorage.getItem("userId");
 
 if (!userId) {
-    window.location.href = "index.html";
+    window.location.replace("index.html");
 }
 
 // UI Helpers
@@ -62,7 +62,7 @@ function showModal({ title, message, isPrompt = false, onConfirm, onCancel }) {
 // Log Out
 function logout() {
     sessionStorage.clear();
-    window.location.href = "index.html";
+    window.location.replace("index.html");
 }
 
 // Force Download (Bypass CORS for cross-origin downloads)
