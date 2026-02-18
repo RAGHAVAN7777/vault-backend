@@ -5,10 +5,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VAULT — THE MONOLITH</title>
+    <link rel="stylesheet" href="intro.css">
     <link rel="stylesheet" href="index.css">
 </head>
 
-<body>
+<body style="overflow: hidden;">
+    <!-- Cinematic Intro Layer (Floating/Marvelous) -->
+    <div id="intro-layer">
+        <h1 class="floating-text f-title" style="top: 20%; left: 50%;">Vault</h1>
+        <p class="floating-text f-subtitle" style="top: 35%; left: 50%;">// QUANTUM_DATA_SOVEREIGNTY</p>
+
+        <p class="floating-text f-chunk" style="top: 50%; left: 30%;">SECURE</p>
+        <p class="floating-text f-chunk" style="top: 55%; left: 70%;">ENCRYPTED</p>
+        <p class="floating-text f-chunk" style="top: 65%; left: 40%;">CINEMATIC</p>
+        <p class="floating-text f-chunk" style="top: 70%; left: 60%;">ETERNITY</p>
+
+        <div class="floating-text f-description" style="top: 50%; left: 50%; width: 600px;">
+            Behold the Monolith. A weightless digital fortress where your data exists beyond the reach of the mundane.
+            Step into the void of total privacy.
+        </div>
+
+        <button id="btn-get-into-vault" class="floating-text" style="top: 85%; left: 50%;">GET INTO VAULT</button>
+
+        <!-- Stars/Nebula Container -->
+        <div id="intro-canvas-bg"></div>
+
+        <!-- Cinematic Blue Rays -->
+        <div class="blue-ray-container">
+            <div class="blue-ray r1"></div>
+            <div class="blue-ray r2"></div>
+            <div class="blue-ray r3"></div>
+        </div>
+    </div>
     <div class="main-wrapper">
         <div class="vault-container">
             <div class="monolith-card">
@@ -239,6 +267,7 @@
             </div>
         </div>
     </div>
+    <script src="intro.js"></script>
     <script src="app.js"></script>
 </body>
 
