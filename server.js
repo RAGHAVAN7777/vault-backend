@@ -657,5 +657,17 @@ app.post('/api/admin/delete-user/:userId', async (req, res) => {
     }
 });
 
+// POST /api/admin-login-pattern - Secure backend pattern verification
+app.post('/api/admin-login-pattern', (req, res) => {
+    const { pattern } = req.body;
+    const serverPattern = process.env.ADMIN_PATTERN;
+
+    if (pattern === serverPattern) {
+        res.json({ success: true, message: 'ADMIN_ACCESS_GRANTED' });
+    } else {
+        res.status(401).json({ success: false, message: 'INVALID_PATTERN_SEQUENCE' });
+    }
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Vault Server running on port ${PORT}`));

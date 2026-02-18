@@ -241,7 +241,7 @@ class PatternLock {
         this.status = document.getElementById('pattern-status');
         this.isDrawing = false;
         this.path = [];
-        this.adminPattern = '046275318'; // New passcode: 1-5-7-3-8-6-4-2-9
+        // Pattern removed for security - verification moved to backend
 
         if (this.canvas) {
             this.handleEvents();
@@ -357,17 +357,22 @@ class PatternLock {
         this.ctx.stroke();
     }
 
-    verify() {
+    async verify() {
         const patternStr = this.path.join('');
-        if (patternStr === this.adminPattern) {
-            this.status.innerText = 'ADMIN_ACCESS_GRANTED. REDIRECTING...';
-            this.status.style.color = 'var(--success)';
-            sessionStorage.setItem("userRole", "admin");
-            sessionStorage.setItem("userId", "SYSTEM_ADMIN");
-            setTimeout(() => {
-                window.location.href = "admin.html";
-            }, 1000);
-        } else if (this.path.length > 0) {
+        if (patternStr.length === 0) return;
+
+        try {
+            const res = await apiCall('/admin-login-pattern', { pattern: patternStr });
+            if (res.success) {
+                this.status.innerText = 'ADMIN_ACCESS_GRANTED. REDIRECTING...';
+                this.status.style.color = 'var(--success)';
+                sessionStorage.setItem("userRole", "admin");
+                sessionStorage.setItem("userId", "SYSTEM_ADMIN");
+                setTimeout(() => {
+                    window.location.href = "admin.html";
+                }, 1000);
+            }
+        } catch (err) {
             this.status.innerText = 'INVALID_PATTERN_SEQUENCE';
             this.status.style.color = 'var(--error)';
             this.dots.forEach(dot => {
