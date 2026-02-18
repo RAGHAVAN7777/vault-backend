@@ -1,141 +1,108 @@
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('btn-get-into-vault');
     const introLayer = document.getElementById('intro-layer');
+    const lightCore = document.getElementById('light-core');
+    const rayContainer = document.getElementById('ray-container');
+    const shockwave = document.getElementById('shockwave');
+    const warpField = document.getElementById('warp-field');
 
-    if (!btn) return;
+    if (!btn || !introLayer || !lightCore) return;
 
-    btn.addEventListener('click', () => {
-        executeMarvelousShatter();
-    });
-
-    async function executeMarvelousShatter() {
-        // 1. Initial Rumble & Dimensional Blur
-        introLayer.classList.add('distorting');
-        const rays = document.querySelector('.blue-ray-container');
-        if (rays) {
-            rays.style.transition = 'opacity 0.6s ease';
-            rays.style.opacity = '0';
-        }
-
-        const elements = document.querySelectorAll('.floating-text');
-        elements.forEach(el => {
-            el.style.filter = 'blur(10px) brightness(2)';
-            el.style.transition = 'filter 0.5s ease';
-            if (el !== btn) el.style.pointerEvents = 'none';
+    btn.addEventListener('click', async () => {
+        // 1. PHASE 1: IMPLOSION
+        const uiElements = document.querySelectorAll('.brand-title, .brand-tagline, #btn-get-into-vault');
+        uiElements.forEach(el => {
+            el.style.transition = 'all 0.4s ease';
+            el.style.opacity = '0';
+            el.style.transform = 'scale(0.8)';
         });
 
-        btn.style.opacity = '0';
-        btn.style.pointerEvents = 'none';
+        // Rays contract and spin faster
+        rayContainer.style.transition = 'all 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.33)';
+        rayContainer.style.transform = 'translate(-50%, -50%) scale(0.1) rotate(720deg)';
+        rayContainer.style.opacity = '0.5';
+
+        // Core Implosion
+        lightCore.classList.add('imploding');
 
         await sleep(500);
 
-        // 2. Dimensional Shatter (Break elements into shards)
-        const shards = [];
-        elements.forEach(el => {
-            const rect = el.getBoundingClientRect();
-            const count = Math.floor((rect.width * rect.height) / 800) + 10;
+        // 2. PHASE 2: SHOCKWAVE & WARP
+        shockwave.classList.add('shockwave-fire');
+        warpField.style.opacity = '1';
+        createWarpStreaks();
 
-            for (let i = 0; i < count; i++) {
-                const shard = document.createElement('div');
-                shard.className = 'pixel-shard';
+        await sleep(200);
 
-                const w = Math.random() * 30 + 10;
-                const h = Math.random() * 30 + 10;
-                const x = rect.left + Math.random() * rect.width;
-                const y = rect.top + Math.random() * rect.height;
+        // 3. PHASE 3: RING SPLASH REVEAL
+        lightCore.classList.remove('imploding');
+        lightCore.style.opacity = '0';
+        lightCore.style.transition = 'opacity 0.3s ease';
 
-                shard.style.width = `${w}px`;
-                shard.style.height = `${h}px`;
-                shard.style.left = `${x}px`;
-                shard.style.top = `${y}px`;
+        triggerRingSplash();
 
-                const rand = Math.random();
-                if (rand > 0.7) {
-                    shard.style.background = 'var(--cyan)';
-                    shard.style.boxShadow = '0 0 15px var(--cyan)';
-                } else if (rand > 0.3) {
-                    shard.style.background = 'var(--blue-primary)';
-                    shard.style.boxShadow = '0 0 10px var(--blue-glow)';
-                } else {
-                    shard.style.background = '#001219';
-                    shard.style.border = '0.5px solid rgba(0, 119, 255, 0.4)';
-                }
+        // Reveal Dashboard
+        await sleep(600);
+        introLayer.classList.add('fade-out');
 
-                introLayer.appendChild(shard);
-                shards.push({
-                    el: shard,
-                    vx: (Math.random() - 0.5) * 50,
-                    vy: (Math.random() - 0.5) * 50,
-                    vr: (Math.random() - 0.5) * 30
-                });
-            }
-            el.style.display = 'none'; // Hide original floating text
-        });
-
-        // 3. Shard Burst
-        let frames = 0;
-        const burstInterval = setInterval(() => {
-            shards.forEach(s => {
-                const l = parseFloat(s.el.style.left);
-                const t = parseFloat(s.el.style.top);
-                s.el.style.left = `${l + s.vx}px`;
-                s.el.style.top = `${t + s.vy}px`;
-                s.el.style.transform = `rotate(${frames * s.vr}deg) scale(${Math.max(0, 1 - frames / 100)})`;
-            });
-            frames++;
-            if (frames > 100) clearInterval(burstInterval);
-        }, 16);
-
-        await sleep(300);
-
-        // 4. THE VERTICAL CRACK
-        const crack = document.createElement('div');
-        crack.className = 'crack-line-vertical';
-        introLayer.appendChild(crack);
-
-        setTimeout(() => {
-            crack.style.height = '100vh';
-            crack.style.transition = 'height 0.6s cubic-bezier(1, 0, 0, 1)';
-        }, 50);
-
-        await sleep(700);
-
-        // 5. DIMENSIONAL SPLIT
-        const leftHalf = document.createElement('div');
-        leftHalf.className = 'page-half page-half-left';
-        const rightHalf = document.createElement('div');
-        rightHalf.className = 'page-half page-half-right';
-
-        // Take background from intro-layer for halves
-        leftHalf.style.background = getComputedStyle(introLayer).backgroundColor;
-        rightHalf.style.background = getComputedStyle(introLayer).backgroundColor;
-
-        document.body.appendChild(leftHalf);
-        document.body.appendChild(rightHalf);
-
-        introLayer.style.background = 'transparent';
-        document.getElementById('intro-canvas-bg').style.display = 'none';
-
-        // Animate halves falling away
-        leftHalf.style.transition = 'all 1.5s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
-        rightHalf.style.transition = 'all 1.5s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
-
-        await sleep(50);
-
-        // Vertical crack split effect
-        leftHalf.style.transform = 'rotate(-20deg) translateX(-120vw) translateY(50vh)';
-        rightHalf.style.transform = 'rotate(20deg) translateX(120vw) translateY(50vh)';
-        crack.style.opacity = '0';
-        crack.style.transition = 'opacity 0.5s ease';
-
-        await sleep(1500);
-
-        // Cleanup
+        await sleep(800);
         introLayer.remove();
-        leftHalf.remove();
-        rightHalf.remove();
-        crack.remove();
         document.body.style.overflow = 'auto';
+    });
+
+    function triggerRingSplash() {
+        const container = document.getElementById('ring-splash-container');
+        if (!container) return;
+
+        const colors = [varText('--cyan'), '#fff', varText('--blue-primary')];
+
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                const ring = document.createElement('div');
+                ring.className = 'ring-splash ring-fire';
+                ring.style.borderColor = colors[i % colors.length];
+                ring.style.width = '100px';
+                ring.style.height = '100px';
+                container.appendChild(ring);
+
+                setTimeout(() => ring.remove(), 1000);
+            }, i * 100);
+        }
+    }
+
+    function varText(name) {
+        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function createWarpStreaks() {
+        const streakCount = 40;
+        const fragment = document.createDocumentFragment();
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+
+        for (let i = 0; i < streakCount; i++) {
+            const streak = document.createElement('div');
+            streak.className = 'warp-streak';
+
+            const angle = Math.random() * Math.PI * 2;
+            const length = Math.random() * 200 + 100;
+            const startDist = Math.random() * 50;
+
+            streak.style.width = `${length}px`;
+            streak.style.left = `${centerX}px`;
+            streak.style.top = `${centerY}px`;
+            streak.style.transformOrigin = '0 50%';
+            streak.style.transform = `rotate(${angle * 180 / Math.PI}deg) translateX(${startDist}px) scaleX(0)`;
+
+            fragment.appendChild(streak);
+
+            requestAnimationFrame(() => {
+                streak.style.transition = 'all 0.8s cubic-bezier(0.15, 0, 0.15, 1)';
+                streak.style.transform = `rotate(${angle * 180 / Math.PI}deg) translateX(${startDist + 1000}px) scaleX(2)`;
+                streak.style.opacity = '0';
+            });
+        }
+        warpField.appendChild(fragment);
     }
 
     function sleep(ms) {
