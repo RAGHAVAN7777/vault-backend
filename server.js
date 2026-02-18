@@ -662,6 +662,11 @@ app.post('/api/admin-login-pattern', (req, res) => {
     const { pattern } = req.body;
     const serverPattern = process.env.ADMIN_PATTERN;
 
+    if (!serverPattern) {
+        console.error("CRITICAL_ERROR: ADMIN_PATTERN is not set in environment variables.");
+        return res.status(500).json({ success: false, message: 'SERVER_CONFIG_ERROR' });
+    }
+
     if (pattern === serverPattern) {
         res.json({ success: true, message: 'ADMIN_ACCESS_GRANTED' });
     } else {

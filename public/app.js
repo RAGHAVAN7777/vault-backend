@@ -7,7 +7,7 @@ const state = {
     userId: ''
 };
 
-const screens = ['screen-login', 'screen-signup-1', 'screen-otp', 'screen-master-otp', 'screen-credentials', 'screen-dashboard', 'screen-recover-1', 'screen-recover-2'];
+const screens = ['screen-login', 'screen-signup-1', 'screen-otp', 'screen-admin-notice', 'screen-master-otp', 'screen-credentials', 'screen-dashboard', 'screen-recover-1', 'screen-recover-2'];
 
 // UI Helpers
 const showScreen = (id) => {
@@ -114,14 +114,23 @@ document.getElementById('btn-verify-otp').onclick = async () => {
         await apiCall('/verify-otp', { email: state.email, otp });
         state.otp = otp;
         if (state.role === 'admin') {
-            setError('PRIMARY_VERIFIED. REQUESTING_MASTER_AUTH...', true);
-            await apiCall('/send-master-otp', {});
-            showScreen('screen-master-otp');
+            setError('PRIMARY_VERIFIED. AWAITING_ADMIN_ACKNOWLEDGEMENT...', true);
+            showScreen('screen-admin-notice');
         } else {
             showScreen('screen-credentials');
         }
     } catch (e) { }
     setBtnLoading('btn-verify-otp', false);
+};
+
+// Admin Notice Confirm
+document.getElementById('btn-admin-notice-confirm').onclick = async () => {
+    setBtnLoading('btn-admin-notice-confirm', true);
+    try {
+        await apiCall('/send-master-otp', {});
+        showScreen('screen-master-otp');
+    } catch (e) { }
+    setBtnLoading('btn-admin-notice-confirm', false);
 };
 
 // Verify Master OTP (L3 Admin Tier)

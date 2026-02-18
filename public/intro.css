@@ -65,8 +65,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 600px;
-    height: 600px;
+    width: min(80vw, 600px);
+    height: min(80vw, 600px);
     background: radial-gradient(circle, var(--core-color) 0%, transparent 70%);
     border-radius: 50%;
     filter: blur(40px);
@@ -157,27 +157,27 @@
 
 /* TYPOGRAPHY */
 .brand-title {
-    font-size: clamp(3rem, 10vw, 8rem);
+    font-size: clamp(3rem, 12vw, 8rem);
     font-weight: 800;
-    letter-spacing: 1.5rem;
+    letter-spacing: clamp(0.5rem, 4vw, 1.5rem);
     color: var(--text-main);
     z-index: 10;
     margin: 0;
     text-shadow: 0 0 20px rgba(0, 119, 255, 0.4);
     text-align: center;
-    padding-left: 1.5rem;
+    padding-left: clamp(0.5rem, 4vw, 1.5rem);
 }
 
 .brand-tagline {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
+    font-size: clamp(0.6rem, 2vw, 0.8rem);
     color: var(--cyan);
-    letter-spacing: 0.6rem;
+    letter-spacing: clamp(0.2rem, 1vw, 0.6rem);
     opacity: 0.6;
     z-index: 10;
     margin-top: 1rem;
     text-align: center;
-    padding-left: 0.6rem;
+    padding-left: clamp(0.2rem, 1vw, 0.6rem);
 }
 
 /* SLEEK BUTTON */
@@ -318,4 +318,25 @@
 .fade-out {
     opacity: 0;
     transition: opacity 0.8s ease;
+}
+
+/* MOBILE OPTIMIZATIONS */
+@media screen and (max-width: 600px) {
+    #btn-get-into-vault {
+        margin-top: 3rem;
+        padding: 1.5rem 0.8rem;
+        width: 160px;
+        font-size: 0.7rem;
+        letter-spacing: 0.3rem;
+    }
+
+    .brand-title {
+        letter-spacing: 0.8rem;
+        padding-left: 0.8rem;
+    }
+
+    .brand-tagline {
+        letter-spacing: 0.3rem;
+        padding-left: 0.3rem;
+    }
 }
