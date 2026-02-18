@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAULT — COMMAND CENTER</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader-bar" style="display: block; width: 200px;"></div>
+    </div>
+
+    <div class="admin-wrapper">
+        <div class="header" style="text-align: left; margin-bottom: 40px;">
+            <h1 style="font-size: 2.5rem;">Command</h1>
+            <div class="status-line">// SYSTEM_OVERRIDE_ACTIVE</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="count-total">0</div>
+                <div class="stat-label">Total Entities</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="count-normal">0</div>
+                <div class="stat-label">L1: Normal</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="count-power">0</div>
+                <div class="stat-label">L2: Power</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="count-admin">0</div>
+                <div class="stat-label">L3: Admin</div>
+            </div>
+        </div>
+
+        <div class="storage-overview">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <div class="stat-label">Cloudinary Infrastructure</div>
+                    <div class="stat-value" id="storage-used" style="font-size: 1.5rem; margin-top: 10px;">0.00 GB</div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="stat-label" id="storage-free">FREE: 10.00 GB</div>
+                    <div class="stat-label">TOTAL: 10.00 GB</div>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="storage-bar"></div>
+            </div>
+        </div>
+
+        <div class="user-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Operator ID</th>
+                        <th>Email Contact</th>
+                        <th>Level</th>
+                        <th>Payload</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="user-list">
+                    <!-- Users injected here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="nav-links" style="margin-top: 60px;">
+            <button onclick="logout()" class="admin-btn" style="border-color: var(--border);">TERMINATE_SESSION</button>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>

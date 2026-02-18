@@ -559,5 +559,103 @@ app.post('/api/purge-account/:userId', async (req, res) => {
 // Check for expired files every 5 minutes
 setInterval(cleanupExpiredFiles, 5 * 60 * 1000);
 
+// --- ADMIN DASHBOARD ENDPOINTS ---
+
+// GET /api/admin/stats - Global system stats
+app.get('/api/admin/stats', async (req, res) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        const normalUsers = await User.countDocuments({ role: 'normal' });
+        const powerUsers = await User.countDocuments({ role: 'power' });
+        const adminUsers = await User.countDocuments({ role: 'admin' });
+
+        const totalStorageResult = await User.aggregate([
+            { $group: { _id: null, totalUsed: { $sum: "$storageUsed" } } }
+        ]);
+        const totalUsed = totalStorageResult.length > 0 ? totalStorageResult[0].totalUsed : 0;
+        const totalLimit = 10 * 1024 * 1024 * 1024; // 10 GB
+
+        res.json({
+            success: true,
+            stats: {
+                totalUsers,
+                roles: {
+                    normal: normalUsers,
+                    power: powerUsers,
+                    admin: adminUsers
+                },
+                storage: {
+                    used: totalUsed,
+                    limit: totalLimit,
+                    free: totalLimit - totalUsed
+                }
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching admin stats" });
+    }
+});
+
+// GET /api/admin/users - List all users
+app.get('/api/admin/users', async (req, res) => {
+    try {
+        const users = await User.find({}, 'userId email role storageUsed createdAt').sort({ createdAt: -1 });
+        res.json({ success: true, users });
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching users list" });
+    }
+});
+
+// POST /api/admin/purge-user-content/:userId - Wipe user content
+app.post('/api/admin/purge-user-content/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await User.findOne({ userId });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const files = await File.find({ userId });
+        const deletePromises = files.map(f =>
+            cloudinary.uploader.destroy(f.publicId, { resource_type: f.resourceType })
+        );
+        await Promise.all(deletePromises);
+
+        await File.deleteMany({ userId });
+        await Note.deleteMany({ userId });
+
+        user.storageUsed = 0;
+        await user.save();
+
+        res.json({ success: true, message: `All content for ${userId} purged` });
+    } catch (err) {
+        res.status(500).json({ message: "Purge failed" });
+    }
+});
+
+// POST /api/admin/delete-user/:userId - Remove entity
+app.post('/api/admin/delete-user/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await User.findOne({ userId });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        // 1. Wipe files first
+        const files = await File.find({ userId });
+        const deletePromises = files.map(f =>
+            cloudinary.uploader.destroy(f.publicId, { resource_type: f.resourceType })
+        );
+        await Promise.all(deletePromises);
+
+        await File.deleteMany({ userId });
+        await Note.deleteMany({ userId });
+
+        // 2. Delete user
+        await User.deleteOne({ userId });
+
+        res.json({ success: true, message: `Entity ${userId} terminated` });
+    } catch (err) {
+        res.status(500).json({ message: "User deletion failed" });
+    }
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Vault Server running on port ${PORT}`));

@@ -193,7 +193,14 @@ document.getElementById('btn-recover-reset').onclick = async () => {
 
 // --- Navigation ---
 document.getElementById('go-to-signup').onclick = () => showScreen('screen-signup-1');
-document.querySelectorAll('.go-to-login').forEach(el => el.onclick = () => showScreen('screen-login'));
+document.querySelectorAll('.go-to-login').forEach(el => el.onclick = () => {
+    // Reset toggle to User if we go back to login
+    const toggle = document.getElementById('login-mode-toggle');
+    if (toggle && toggle.classList.contains('admin-mode')) {
+        toggle.click();
+    }
+    showScreen('screen-login');
+});
 
 document.querySelectorAll('.role-opt').forEach(btn => {
     btn.onclick = () => {
@@ -202,3 +209,174 @@ document.querySelectorAll('.role-opt').forEach(btn => {
         state.role = btn.getAttribute('data-role');
     };
 });
+
+// --- Admin Pattern Lock & Toggle Logic ---
+
+const loginModeToggle = document.getElementById('login-mode-toggle');
+const userFields = document.getElementById('user-login-fields');
+const adminFields = document.getElementById('admin-pattern-fields');
+const toggleLabels = document.querySelectorAll('.toggle-label');
+
+if (loginModeToggle) {
+    loginModeToggle.onclick = () => {
+        const isAdmin = loginModeToggle.classList.toggle('admin-mode');
+        userFields.style.display = isAdmin ? 'none' : 'block';
+        adminFields.style.display = isAdmin ? 'block' : 'none';
+
+        toggleLabels.forEach(label => {
+            label.classList.toggle('active', label.getAttribute('data-mode') === (isAdmin ? 'admin' : 'user'));
+        });
+
+        if (isAdmin) {
+            patternLock.init();
+        }
+    };
+}
+
+class PatternLock {
+    constructor() {
+        this.canvas = document.getElementById('pattern-canvas');
+        this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+        this.dots = document.querySelectorAll('.dot');
+        this.status = document.getElementById('pattern-status');
+        this.isDrawing = false;
+        this.path = [];
+        this.adminPattern = '046275318'; // New passcode: 1-5-7-3-8-6-4-2-9
+
+        if (this.canvas) {
+            this.handleEvents();
+        }
+    }
+
+    init() {
+        this.resize();
+        this.clear();
+    }
+
+    resize() {
+        if (!this.canvas) return;
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+    }
+
+    clear() {
+        this.path = [];
+        this.isDrawing = false;
+        this.dots.forEach(dot => dot.classList.remove('active', 'error'));
+        this.draw();
+        if (this.status) this.status.innerText = 'CONNECT_NODES_TO_AUTHORIZE';
+        if (this.status) this.status.style.color = 'var(--text-dim)';
+    }
+
+    handleEvents() {
+        const container = this.canvas.parentElement;
+
+        const startDrawing = (e) => {
+            if (loginModeToggle && !loginModeToggle.classList.contains('admin-mode')) return;
+            this.clear();
+            this.isDrawing = true;
+            this.handleMove(e);
+        };
+
+        const stopDrawing = () => {
+            if (!this.isDrawing) return;
+            this.isDrawing = false;
+            this.verify();
+        };
+
+        container.addEventListener('mousedown', startDrawing);
+        container.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startDrawing(e.touches[0]);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (this.isDrawing) this.handleMove(e);
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (this.isDrawing) {
+                e.preventDefault();
+                this.handleMove(e.touches[0]);
+            }
+        });
+
+        window.addEventListener('mouseup', stopDrawing);
+        window.addEventListener('touchend', stopDrawing);
+    }
+
+    handleMove(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        this.dots.forEach((dot, index) => {
+            const dotRect = dot.getBoundingClientRect();
+            const dotX = dotRect.left + dotRect.width / 2 - rect.left;
+            const dotY = dotRect.top + dotRect.height / 2 - rect.top;
+
+            const dist = Math.hypot(x - dotX, y - dotY);
+            if (dist < 25 && !this.path.includes(index)) {
+                this.path.push(index);
+                dot.classList.add('active');
+            }
+        });
+
+        this.currentMousePos = { x, y };
+        this.draw();
+    }
+
+    draw() {
+        if (!this.ctx) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        if (this.path.length === 0) return;
+
+        this.ctx.beginPath();
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeStyle = '#6495ED';
+        this.ctx.lineJoin = 'round';
+        this.ctx.lineCap = 'round';
+
+        const rect = this.canvas.getBoundingClientRect();
+
+        this.path.forEach((dotIndex, i) => {
+            const dot = this.dots[dotIndex];
+            const dotRect = dot.getBoundingClientRect();
+            const dx = dotRect.left + dotRect.width / 2 - rect.left;
+            const dy = dotRect.top + dotRect.height / 2 - rect.top;
+
+            if (i === 0) this.ctx.moveTo(dx, dy);
+            else this.ctx.lineTo(dx, dy);
+        });
+
+        if (this.isDrawing && this.currentMousePos) {
+            this.ctx.lineTo(this.currentMousePos.x, this.currentMousePos.y);
+        }
+
+        this.ctx.stroke();
+    }
+
+    verify() {
+        const patternStr = this.path.join('');
+        if (patternStr === this.adminPattern) {
+            this.status.innerText = 'ADMIN_ACCESS_GRANTED. REDIRECTING...';
+            this.status.style.color = 'var(--success)';
+            sessionStorage.setItem("userRole", "admin");
+            sessionStorage.setItem("userId", "SYSTEM_ADMIN");
+            setTimeout(() => {
+                window.location.href = "admin.html";
+            }, 1000);
+        } else if (this.path.length > 0) {
+            this.status.innerText = 'INVALID_PATTERN_SEQUENCE';
+            this.status.style.color = 'var(--error)';
+            this.dots.forEach(dot => {
+                if (dot.classList.contains('active')) dot.classList.add('error');
+            });
+            setTimeout(() => this.clear(), 1000);
+        }
+    }
+}
+
+const patternLock = new PatternLock();
+window.addEventListener('resize', () => patternLock.resize());

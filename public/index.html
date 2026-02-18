@@ -38,15 +38,48 @@
 
                 <!-- Screen 1: Login -->
                 <div id="screen-login" class="step active">
-                    <div class="input-block">
-                        <label>OPERATOR_ID</label>
-                        <input type="text" id="login-userid" placeholder="YOURUSERID">
+                    <div class="login-toggle-container">
+                        <span class="toggle-label active" data-mode="user">USER_AUTH</span>
+                        <div class="toggle-switch" id="login-mode-toggle">
+                            <div class="toggle-knob"></div>
+                        </div>
+                        <span class="toggle-label" data-mode="admin">ADMIN_LOCK</span>
                     </div>
-                    <div class="input-block">
-                        <label>SEC_KEY.MPIN</label>
-                        <input type="password" id="login-mpin" maxlength="6" placeholder="••••••">
+
+                    <div id="user-login-fields">
+                        <div class="input-block">
+                            <label>OPERATOR_ID</label>
+                            <input type="text" id="login-userid" placeholder="YOURUSERID">
+                        </div>
+                        <div class="input-block">
+                            <label>SEC_KEY.MPIN</label>
+                            <input type="password" id="login-mpin" maxlength="6" placeholder="••••••">
+                        </div>
+                        <button id="btn-login">INITIATE_UNLOCK</button>
                     </div>
-                    <button id="btn-login">INITIATE_UNLOCK</button>
+
+                    <div id="admin-pattern-fields" style="display: none;">
+                        <div class="status-line" style="margin-bottom: 20px; color: var(--accent);">//
+                            DRAW_SECURITY_PATTERN</div>
+                        <div class="pattern-lock-container">
+                            <canvas id="pattern-canvas"></canvas>
+                            <div class="pattern-grid">
+                                <div class="dot" data-index="0"></div>
+                                <div class="dot" data-index="1"></div>
+                                <div class="dot" data-index="2"></div>
+                                <div class="dot" data-index="3"></div>
+                                <div class="dot" data-index="4"></div>
+                                <div class="dot" data-index="5"></div>
+                                <div class="dot" data-index="6"></div>
+                                <div class="dot" data-index="7"></div>
+                                <div class="dot" data-index="8"></div>
+                            </div>
+                        </div>
+                        <p id="pattern-status"
+                            style="text-align: center; font-size: 0.7rem; margin-top: 10px; color: var(--text-dim); font-family: 'JetBrains Mono';">
+                            CONNECT_NODES_TO_AUTHORIZE</p>
+                    </div>
+
                     <div class="nav-links">
                         UNREGISTERED? <span id="go-to-signup">CREATE_ENTITY</span><br>
                         LOST_ACCESS? <span id="go-to-recovery">RECOVER_AUTH</span>
