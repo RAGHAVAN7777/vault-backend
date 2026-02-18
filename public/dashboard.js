@@ -17,7 +17,7 @@ const setStatus = (msg, isError = false) => {
 };
 
 // Custom Modal Helpers
-function showModal({ title, message, isPrompt = false, onConfirm, onCancel }) {
+function showModal({ title, message, isPrompt = false, onConfirm, onCancel, confirmText = "CONFIRM" }) {
     const overlay = document.getElementById('custom-modal-overlay');
     const input = document.getElementById('modal-prompt-input');
     const confirmBtn = document.getElementById('modal-confirm-btn');
@@ -25,6 +25,7 @@ function showModal({ title, message, isPrompt = false, onConfirm, onCancel }) {
 
     document.getElementById('modal-title').innerText = `// ${title}`;
     document.getElementById('modal-message').innerText = message;
+    confirmBtn.innerText = confirmText;
 
     input.style.display = isPrompt ? 'block' : 'none';
     if (isPrompt) {
@@ -38,6 +39,7 @@ function showModal({ title, message, isPrompt = false, onConfirm, onCancel }) {
         overlay.style.display = 'none';
         confirmBtn.onclick = null;
         cancelBtn.onclick = null;
+        confirmBtn.innerText = "CONFIRM"; // Reset to default
     };
 
     confirmBtn.onclick = () => {
@@ -220,7 +222,7 @@ function toggleFilePreview(publicId) {
 }
 
 // Upload File
-document.getElementById('btn-upload').onclick = async () => {
+async function initiateUpload() {
     const fileInput = document.getElementById('fileInput');
     if (!fileInput.files[0]) return setStatus("NO_FILE_SELECTED", true);
 
@@ -257,7 +259,7 @@ document.getElementById('btn-upload').onclick = async () => {
     } finally {
         setLoader(false);
     }
-};
+}
 
 // Delete File
 async function deleteFile(publicId) {
@@ -486,8 +488,15 @@ document.getElementById('fileInput').addEventListener('change', (e) => {
     if (e.target.files[0]) {
         showModal({
             title: "FILE_STAGED",
-            message: `[${e.target.files[0].name.toUpperCase()}] IS_READY_FOR_INGESTION. CLICK 'INITIATE_UPLOAD' TO SEND TO CLOUD_STORAGE.`,
-            onConfirm: () => { } // Just an information modal
+            message: `[${e.target.files[0].name.toUpperCase()}] IS_READY_FOR_INGESTION.`,
+            confirmText: "INITIATE_UPLOAD",
+            onConfirm: () => {
+                initiateUpload();
+            },
+            onCancel: () => {
+                document.getElementById('fileInput').value = '';
+                setStatus("UPLOAD_ABORTED", true);
+            }
         });
     }
 });

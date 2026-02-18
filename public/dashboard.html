@@ -12,7 +12,7 @@
             grid-template-columns: 1fr;
             gap: 30px;
             width: 100%;
-            max-width: 900px;
+            max-width: 1100px;
         }
 
         @media (min-width: 768px) {
@@ -105,13 +105,14 @@
         }
 
         .modal-monolith {
-            max-width: 450px;
-            width: 90%;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid var(--accent);
             padding: 40px;
-            border: 1px solid var(--border);
-            text-align: center;
-            background: #050505;
+            width: 100%;
+            max-width: 500px;
             position: relative;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 1);
+            text-align: center;
             overflow-wrap: anywhere;
             word-break: break-word;
             overflow: hidden;
@@ -159,19 +160,22 @@
 
         .modal-actions {
             display: flex;
-            gap: 15px;
-            margin-top: 20px;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 30px;
         }
 
         .modal-btn {
-            flex: 1;
-            padding: 12px;
+            width: 100%;
+            padding: 18px 20px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             letter-spacing: 2px;
             cursor: pointer;
             border: none;
             text-transform: uppercase;
+            white-space: nowrap;
+            transition: all 0.3s ease;
         }
 
         .modal-btn.primary {
@@ -209,7 +213,7 @@
     </div>
     <!-- Top Identity & Status Bar -->
     <div id="top-status-bar"
-        style="max-width: 900px; margin: 40px auto 10px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px;">
+        style="max-width: 1100px; margin: 40px auto 10px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px;">
         <div id="user-identity">
             <div class="status-line"
                 style="font-size: 0.6rem; color: var(--accent); opacity: 0.9; letter-spacing: 2px;">//
@@ -258,7 +262,8 @@
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <input type="hidden" id="active-note-id">
                         <div id="active-note-title" class="status-line"
-                            style="color: var(--accent); font-size: 0.7rem;">// LOG_EDITOR</div>
+                            style="color: var(--accent); font-size: 0.7rem; white-space: nowrap; flex: 1; min-width: 150px; overflow: hidden; text-overflow: ellipsis; padding-right: 15px;">
+                            // LOG_EDITOR</div>
                         <div style="display: flex; gap: 10px;">
                             <button onclick="saveActiveNote()"
                                 style="width: auto; padding: 5px 10px; background: var(--accent); color: #000; font-size: 0.6rem;">SAVE</button>
@@ -289,9 +294,7 @@
             <div class="status-line" style="margin-bottom: 20px;">// DATA_VAULT.FS</div>
 
             <input type="file" id="fileInput" style="display: none;">
-            <button onclick="document.getElementById('fileInput').click()">SELECT_FILE_FOR_INGESTION</button>
-            <button id="btn-upload"
-                style="margin-top: 10px; background: transparent; color: var(--accent); border: 1px solid var(--accent);">INITIATE_UPLOAD</button>
+            <button onclick="document.getElementById('fileInput').click()">INGEST_FILE</button>
             <div id="upload-status" class="status-line" style="margin-top: 10px; height: 1rem;"></div>
 
             <div class="file-list" id="fileList">
