@@ -113,7 +113,7 @@ document.getElementById('btn-verify-otp').onclick = async () => {
     try {
         await apiCall('/verify-otp', { email: state.email, otp });
         state.otp = otp;
-        if (state.role === 'admin') {
+        if (state.role === 'premium') {
             setError('PRIMARY_VERIFIED. AWAITING_ADMIN_ACKNOWLEDGEMENT...', true);
             showScreen('screen-admin-notice');
         } else {
