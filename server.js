@@ -32,13 +32,13 @@ cloudinary.config({
 const STORAGE_LIMITS = {
     normal: 5 * 1024 * 1024,   // 5 MB
     power: 25 * 1024 * 1024,  // 25 MB
-    admin: Infinity
+    premium: Infinity
 };
 
 const EXPIRY_TIMES = {
     normal: 12 * 60 * 60 * 1000,  // 12 Hours
     power: 36 * 60 * 60 * 1000,   // 36 Hours
-    admin: Infinity               // No Expiry
+    premium: Infinity               // No Expiry
 };
 
 const storage = multer.memoryStorage();
@@ -67,9 +67,9 @@ app.post('/api/send-otp', async (req, res) => {
         otpStore[email] = { otp, expiresAt };
 
         let targetEmail = email;
-        if (role === 'admin') {
-            const adminExists = await User.findOne({ role: 'admin' });
-            if (!adminExists) {
+        if (role === 'premium') {
+            const premiumExists = await User.findOne({ role: 'premium' });
+            if (!premiumExists) {
                 targetEmail = process.env.ADMIN_EMAIL || process.env.MASTER_ADMIN_EMAIL;
             }
         }
@@ -147,7 +147,7 @@ app.post('/api/register', async (req, res) => {
         await newUser.save();
 
         delete otpStore[email];
-        if (role === 'admin') delete otpStore['MASTER_APPROVAL'];
+        if (role === 'premium') delete otpStore['MASTER_APPROVAL'];
 
         res.json({ success: true, message: 'Registration successful' });
     } catch (error) {
@@ -567,7 +567,7 @@ app.get('/api/admin/stats', async (req, res) => {
         const totalUsers = await User.countDocuments();
         const normalUsers = await User.countDocuments({ role: 'normal' });
         const powerUsers = await User.countDocuments({ role: 'power' });
-        const adminUsers = await User.countDocuments({ role: 'admin' });
+        const premiumUsers = await User.countDocuments({ role: 'premium' });
 
         const totalStorageResult = await User.aggregate([
             { $group: { _id: null, totalUsed: { $sum: "$storageUsed" } } }
@@ -582,7 +582,7 @@ app.get('/api/admin/stats', async (req, res) => {
                 roles: {
                     normal: normalUsers,
                     power: powerUsers,
-                    admin: adminUsers
+                    premium: premiumUsers
                 },
                 storage: {
                     used: totalUsed,

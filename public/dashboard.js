@@ -126,7 +126,7 @@ async function refreshStorage() {
         document.getElementById('display-userid').innerText = userId;
         document.getElementById('display-role').innerText = `[ACCESS_LEVEL: ${data.role.toUpperCase()}]`;
 
-        if (data.role === 'admin') {
+        if (data.role === 'premium') {
             text.innerText = `// STORAGE: UNLIMITED_CAPACITY`;
             fill.style.width = '100%';
             fill.style.background = 'var(--accent)';

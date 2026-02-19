@@ -375,7 +375,7 @@ class PatternLock {
             if (res.success) {
                 this.status.innerText = 'ADMIN_ACCESS_GRANTED. REDIRECTING...';
                 this.status.style.color = 'var(--success)';
-                sessionStorage.setItem("userRole", "admin");
+                sessionStorage.setItem("userRole", "premium");
                 sessionStorage.setItem("userId", "SYSTEM_ADMIN");
                 setTimeout(() => {
                     window.location.href = "admin.html";

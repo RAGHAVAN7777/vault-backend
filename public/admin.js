@@ -2,7 +2,7 @@
 
 const checkAuth = () => {
     const role = sessionStorage.getItem("userRole");
-    if (role !== "admin") {
+    if (role !== "premium") {
         window.location.href = "index.html";
     }
 };
