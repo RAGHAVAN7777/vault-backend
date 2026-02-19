@@ -7,7 +7,7 @@ const state = {
     userId: ''
 };
 
-const screens = ['screen-login', 'screen-signup-1', 'screen-otp', 'screen-admin-notice', 'screen-master-otp', 'screen-credentials', 'screen-dashboard', 'screen-recover-1', 'screen-recover-2'];
+const screens = ['screen-login', 'screen-signup-1', 'screen-otp', 'screen-admin-notice', 'screen-master-otp', 'screen-credentials', 'screen-dashboard', 'screen-recover-1', 'screen-recover-2', 'screen-about'];
 
 // UI Helpers
 const showScreen = (id) => {
@@ -202,6 +202,8 @@ document.getElementById('btn-recover-reset').onclick = async () => {
 
 // --- Navigation ---
 document.getElementById('go-to-signup').onclick = () => showScreen('screen-signup-1');
+document.getElementById('go-to-recovery').onclick = () => showScreen('screen-recover-1');
+document.getElementById('go-to-about').onclick = () => showScreen('screen-about');
 document.querySelectorAll('.go-to-login').forEach(el => el.onclick = () => {
     // Reset toggle to User if we go back to login
     const toggle = document.getElementById('login-mode-toggle');
@@ -210,6 +212,11 @@ document.querySelectorAll('.go-to-login').forEach(el => el.onclick = () => {
     }
     showScreen('screen-login');
 });
+
+document.getElementById('toggle-help').onclick = () => {
+    const info = document.getElementById('help-info');
+    info.style.display = info.style.display === 'none' ? 'block' : 'none';
+};
 
 document.querySelectorAll('.role-opt').forEach(btn => {
     btn.onclick = () => {

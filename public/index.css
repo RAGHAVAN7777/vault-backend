@@ -790,7 +790,7 @@ button::before {
 button:hover {
     background: rgba(var(--glow), 0.15);
     border-color: rgba(var(--glow), 0.8);
-    letter-spacing: 8px;
+    letter-spacing: 6px;
     box-shadow:
         0 0 30px rgba(var(--glow), 0.2),
         inset 0 0 20px rgba(var(--glow), 0.1);
@@ -1051,4 +1051,25 @@ td {
     justify-content: center;
     z-index: 1000;
     transition: opacity 0.5s ease;
+}
+
+/* About Me Scroll Container */
+.about-scroll-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.about-scroll-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.about-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 2px;
+}
+
+.creator-stamp {
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    pointer-events: none;
+    user-select: none;
 }

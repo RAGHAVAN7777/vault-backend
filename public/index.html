@@ -26,6 +26,10 @@
         </div>
         <h1 class="brand-title">Vault</h1>
         <p class="brand-tagline">QUANTUM DATA SOVEREIGNTY</p>
+        <div class="creator-stamp"
+            style="font-size: 0.6rem; color: #fff; opacity: 0.4; margin-bottom: 30px; letter-spacing: 2px;">
+            CREATED_DESIGNED_IMPLEMENTED_BY_RAGHAVAN_S
+        </div>
         <button id="btn-get-into-vault">GET INTO VAULT</button>
     </div>
     <div class="main-wrapper">
@@ -34,6 +38,10 @@
                 <div class="header">
                     <h1>Vault</h1>
                     <div class="status-line">// ACCESS_REQUIRED</div>
+                    <div class="creator-stamp"
+                        style="font-size: 0.6rem; color: var(--accent); margin-top: 5px; opacity: 0.8; letter-spacing: 1px;">
+                        CREATED_DESIGNED_IMPLEMENTED_BY_RAGHAVAN_S
+                    </div>
                 </div>
 
                 <!-- Screen 1: Login -->
@@ -58,9 +66,19 @@
                         <button id="btn-login">INITIATE_UNLOCK</button>
                         <div class="nav-links">
                             UNREGISTERED? <span id="go-to-signup">CREATE_ENTITY</span><br>
-                            LOST_ACCESS? <span id="go-to-recovery">RECOVER_AUTH</span>
+                            LOST_ACCESS? <span id="go-to-recovery">RECOVER_AUTH</span><br>
+                            NEED_ASSISTANCE? <span id="toggle-help"
+                                style="cursor: pointer; color: var(--accent);">GET_HELP</span>
+                        </div>
+                        <div id="help-info"
+                            style="display: none; margin-top: 15px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-dim); line-height: 1.5; border: 1px dashed rgba(255,255,255,0.1); padding: 10px; text-align: left;">
+                            // TECHNICAL_SUPPORT_OPERATOR<br>
+                            NAME: <span style="color: var(--accent);">RAGHAVAN S</span><br>
+                            GMAIL: <span style="color: var(--accent);">sraghavan4747@gmail.com</span>
                         </div>
                     </div>
+
+
 
                     <div id="admin-pattern-fields" style="display: none;">
                         <div class="status-line" style="margin-bottom: 20px; color: var(--accent);">//
@@ -90,6 +108,13 @@
                         </div>
                     </div>
 
+                    <!-- Global Intel Link (Moved Below) -->
+                    <div style="text-align: center; margin-top: 20px;">
+                        <span id="go-to-about"
+                            style="color: var(--accent); cursor: pointer; display: inline-block; border-bottom: 1px solid var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 1px;">//
+                            ARCHITECTURE_INTEL (ABOUT_PROJECT)</span>
+                    </div>
+
 
                 </div>
 
@@ -105,7 +130,7 @@
                         <label>VERIFICATION_EMAIL</label>
                         <input type="email" id="signup-email" placeholder="OPERATOR@GMAIL.COM">
                     </div>
-                    <button id="btn-send-otp">REQUEST_VERIFICATION</button>
+                    <button id="btn-send-otp">REQUEST_AUTH_CODE</button>
                     <div class="nav-links">
                         REGISTERED? <span class="go-to-login">BACK_TO_LOGIN</span>
                     </div>
@@ -144,7 +169,7 @@
                         <input type="text" id="master-otp-code" maxlength="6" placeholder="000000"
                             style="text-align: center;">
                     </div>
-                    <button id="btn-verify-master-otp">AUTHORIZE_ADMIN_LEVEL</button>
+                    <button id="btn-verify-master-otp">AUTHORIZE_L3_ACCESS</button>
                     <div class="nav-links">
                         WAITING_FOR_MASTER_GMAIL_SIGNAL...
                     </div>
@@ -201,6 +226,43 @@
                         SYSTEM_UNLOCKED</p>
                     <button class="go-to-login"
                         style="background: transparent; border: 1px solid var(--border); color: var(--text-dim);">TERMINATE_SESSION</button>
+                </div>
+
+                <!-- Screen 10: About Me -->
+                <div id="screen-about" class="step">
+                    <div class="status-line" style="color: var(--accent); margin-bottom: 20px;">//
+                        SYSTEM_ARCHITECTURE_OVERVIEW</div>
+                    <div class="about-scroll-container"
+                        style="max-height: 350px; overflow-y: auto; padding-right: 10px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim); line-height: 1.6;">
+                        <p style="color: var(--accent); margin-bottom: 15px;">[PROJECT: VAULT_MONOLITH]</p>
+                        <p>VAULT IS A HIGH-SECURITY SAA DATA STORAGE SOLUTION DESIGNED WITH A CINEMATIC CYBERPUNK
+                            AESTHETIC.</p>
+
+                        <p style="margin-top: 20px; color: var(--accent);">// CORE_TECHNOLOGIES_USED</p>
+                        <ul style="list-style: none; padding-left: 10px;">
+                            <li>• BACKEND: NODE.JS | EXPRESS.JS</li>
+                            <li>• DATABASE: MONGODB | MONGOOSE</li>
+                            <li>• ASSET_STORAGE: CLOUDINARY_CORE_API</li>
+                            <li>• SECURITY: BCRYPT | DUAL_LAYER_OTP | MULTER</li>
+                            <li>• UI_AESTHETICS: VANILLA_HTML | ADVANCED_CSS_3D_FX</li>
+                        </ul>
+
+                        <p style="margin-top: 20px; color: var(--accent);">// KEY_ARCHITECTURE_POINTS</p>
+                        <ul style="list-style: none; padding-left: 10px;">
+                            <li>• MULTI-TIER AUTH: L1(NORMAL), L2(POWER), L3(PREMIUM)</li>
+                            <li>• SECURE_VAULT: AES-256 EQUIVALENT CLOUDINARY ENCRYPTION</li>
+                            <li>• ADMIN_CONTROL: DUAL-LAYER OTP + MASTER APPROVAL</li>
+                            <li>• CINEMATIC_UI: 3D CSS MONOLITH ENGINE (GPU_ACCELERATED)</li>
+                            <li>• REAL_TIME_FS: INSTANT FILE INGESTION & PURGING</li>
+                            <li>• NEURAL_ADAPTIVE_UX: ADVANCED STATE_SYNC ARCHITECTURE</li>
+                            <li>• DATA_INTEGRITY: AUTO-EXPIRY & QUOTA ENFORCEMENT</li>
+                            <li>• SECURE_PAYLOAD: MULTI-PASS DATA OBFUSCATION</li>
+                        </ul>
+
+                        <p style="margin-top: 20px; color: var(--accent); text-align: center;">---
+                            CREATED_DESIGNED_IMPLEMENTED_BY_RAGHAVAN_S ---</p>
+                    </div>
+                    <button class="go-to-login" style="margin-top: 20px;">RETURN_TO_PORTAL</button>
                 </div>
 
                 <div id="error-display"></div>
