@@ -66,13 +66,7 @@ app.post('/api/send-otp', async (req, res) => {
         const expiresAt = Date.now() + 5 * 60 * 1000;
         otpStore[email] = { otp, expiresAt };
 
-        let targetEmail = email;
-        if (role === 'premium') {
-            const premiumExists = await User.findOne({ role: 'premium' });
-            if (!premiumExists) {
-                targetEmail = process.env.ADMIN_EMAIL || process.env.MASTER_ADMIN_EMAIL;
-            }
-        }
+        const targetEmail = email;
 
         await sendEmail(targetEmail, 'Vault - Verification OTP', `Your OTP is: ${otp}. Valid for 5 minutes.`);
         res.json({ success: true, message: 'OTP sent' });
@@ -131,8 +125,8 @@ app.post('/api/register', async (req, res) => {
             return res.status(400).json({ message: 'User OTP invalid or expired' });
         }
 
-        // 2. Dual-Layer Check for Admin
-        if (role === 'admin') {
+        // 2. Dual-Layer Check for Premium
+        if (role === 'premium') {
             const masterRecord = otpStore['MASTER_APPROVAL'];
             if (!masterRecord || masterRecord.otp !== masterOtp || Date.now() > masterRecord.expiresAt) {
                 return res.status(403).json({ message: 'MASTER_AUTHORIZATION_MISSING_OR_INVALID' });
