@@ -56,6 +56,10 @@
                             <input type="password" id="login-mpin" maxlength="6" placeholder="••••••">
                         </div>
                         <button id="btn-login">INITIATE_UNLOCK</button>
+                        <div class="nav-links">
+                            UNREGISTERED? <span id="go-to-signup">CREATE_ENTITY</span><br>
+                            LOST_ACCESS? <span id="go-to-recovery">RECOVER_AUTH</span>
+                        </div>
                     </div>
 
                     <div id="admin-pattern-fields" style="display: none;">
@@ -78,12 +82,15 @@
                         <p id="pattern-status"
                             style="text-align: center; font-size: 0.7rem; margin-top: 10px; color: var(--text-dim); font-family: 'JetBrains Mono';">
                             CONNECT_NODES_TO_AUTHORIZE</p>
+
+                        <div
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--error); text-align: center; margin-top: 25px; line-height: 1.4; border: 1px solid rgba(255, 51, 51, 0.2); padding: 10px; background: rgba(255, 51, 51, 0.05);">
+                            // NOTICE: THIS MODE IS ONLY FOR ADMIN NOT FOR USERS.<br>
+                            KINDLY TOGGLE TO USER_AUTH FOR STANDARD ACCESS.
+                        </div>
                     </div>
 
-                    <div class="nav-links">
-                        UNREGISTERED? <span id="go-to-signup">CREATE_ENTITY</span><br>
-                        LOST_ACCESS? <span id="go-to-recovery">RECOVER_AUTH</span>
-                    </div>
+
                 </div>
 
                 <!-- Screen 2: Signup Step 1 - Role & Email -->

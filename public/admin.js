@@ -24,7 +24,7 @@ const fetchStats = async () => {
             document.getElementById('count-total').innerText = data.stats.totalUsers;
             document.getElementById('count-normal').innerText = data.stats.roles.normal;
             document.getElementById('count-power').innerText = data.stats.roles.power;
-            document.getElementById('count-admin').innerText = data.stats.roles.admin;
+            document.getElementById('count-admin').innerText = data.stats.roles.premium;
 
             const used = data.stats.storage.used;
             const limit = data.stats.storage.limit;
@@ -70,7 +70,7 @@ const fetchUsers = async () => {
 
 const getRoleColor = (role) => {
     switch (role) {
-        case 'admin': return '#ff3333';
+        case 'premium': return '#ff3333';
         case 'power': return '#6495ED';
         default: return '#33ff33';
     }

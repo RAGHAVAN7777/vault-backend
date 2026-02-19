@@ -229,6 +229,7 @@ const toggleLabels = document.querySelectorAll('.toggle-label');
 if (loginModeToggle) {
     loginModeToggle.onclick = () => {
         const isAdmin = loginModeToggle.classList.toggle('admin-mode');
+        document.body.classList.toggle('admin-mode', isAdmin);
         userFields.style.display = isAdmin ? 'none' : 'block';
         adminFields.style.display = isAdmin ? 'block' : 'none';
 
