@@ -12,7 +12,7 @@ The application is deployed as a unified service on Render.
 ## Live Deployment
 
 Application URL:  
-https://vault-backend-dq8o.onrender.com
+# https://vault-backend-dq8o.onrender.com
 
 The deployed service includes both the frontend interface and backend API in a single production environment.
 
